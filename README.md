@@ -43,5 +43,9 @@ drag and drop com.chewychiyu.shape into project folder
 ```java
    Color _c = _shape._get_color();
 ```
+   Prompt for collision
+```java
+   boolean _did_collide = _shape_a._collided_with(_shape_b);
+```
    
    

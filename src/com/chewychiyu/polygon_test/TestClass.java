@@ -3,8 +3,10 @@ package com.chewychiyu.polygon_test;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
@@ -19,8 +21,7 @@ public class TestClass extends JPanel{
 	
 	Dimension screen_dim_ = new Dimension(800,800);
 	Shape poly_;
-	int side_index_ = 4;
-	final int side_length = 200;
+	Shape poly2_;
 	
 	public static void main(String[] args){
 		new TestClass();
@@ -28,7 +29,8 @@ public class TestClass extends JPanel{
 	
 	TestClass(){
 		panel();
-		poly_ = new Shape(300,300,200,4);
+		poly_ = new Shape(300,300,200,3);
+		poly2_ = new Shape(300,300,200,4);
 		addMouseListener(new MouseListener(){
 
 			@Override
@@ -63,28 +65,54 @@ public class TestClass extends JPanel{
 			}
 		
 		});
+		addMouseMotionListener(new MouseMotionListener(){
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				poly_._shift_to(e.getX(), e.getY());
+				repaint();
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+			
+		});
+		
 		addMouseWheelListener(new MouseWheelListener(){
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				if(e.getWheelRotation() < 0){
-					poly_._change_facets_by(1);
-					//poly_._rotate_by(Math.PI/60);
+					//poly_._change_facets_by(1);
+					poly_._rotate_by(Math.PI/60);
 					//poly_._change_size_by(10);
 				}else if(e.getWheelRotation() > 0){
-					poly_._change_facets_by(-1);
-					//poly_._rotate_by(-Math.PI/60);
+					//poly_._change_facets_by(-1);
+				    poly_._rotate_by(-Math.PI/60);
 					//poly_._change_size_by(-10);
 				}		
 				repaint();
 			}
 			
 		});
-	}
 
+		
+	
+	}
+	
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		poly_._draw_fill(g);
+		poly2_._draw_fill(g);
+		if(poly_._collided_with(poly2_)){
+			poly_._set_color(Color.RED);
+			poly2_._set_color(Color.RED);
+		}else{
+			poly_._set_color(Color.BLACK);
+			poly2_._set_color(Color.BLACK);
+		}
 	}
 	
 	public void panel(){
