@@ -2,10 +2,9 @@ package com.chewychiyu.shape;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 public class Shape {
@@ -17,7 +16,7 @@ public class Shape {
 	private double sides_;
 	private double angle_;
 	private Color color_;
-	
+
 	public Shape(double _x_pos, double _y_pos, double _side_length, int _sides){
 		location_ = new Point2D.Double(_x_pos, _y_pos);
 		side_length_ = _side_length;
@@ -89,20 +88,20 @@ public class Shape {
 	public Color _get_color(){
 		return color_;
 	}
-	
+
 	public Polygon _get_rotation_mask(Polygon _poly, double angle){
 		Polygon _rotation_mask = new Polygon();
 		for(int _index = 0 ; _index < _poly.npoints; _index++){
-		    double _storage;
-		    _storage = (_poly.xpoints[_index]-location_.getX()) * Math.cos(angle) - ((_poly.ypoints[_index]-location_.getY()) * Math.sin(angle));
-		    int _trans_y_pos   = (int) (location_.getY() + ((_poly.xpoints[_index]-location_.getX()) * Math.sin(angle)) + (((_poly.ypoints[_index]-location_.getY()) * Math.cos(angle))) );
-		    int _trans_x_pos   = (int) (location_.getX() + _storage );
-		    _rotation_mask.addPoint(_trans_x_pos, _trans_y_pos);
+			double _storage;
+			_storage = (_poly.xpoints[_index]-location_.getX()) * Math.cos(angle) - ((_poly.ypoints[_index]-location_.getY()) * Math.sin(angle));
+			int _trans_y_pos   = (int) (location_.getY() + ((_poly.xpoints[_index]-location_.getX()) * Math.sin(angle)) + (((_poly.ypoints[_index]-location_.getY()) * Math.cos(angle))) );
+			int _trans_x_pos   = (int) (location_.getX() + _storage );
+			_rotation_mask.addPoint(_trans_x_pos, _trans_y_pos);
 		}
 		return _rotation_mask;
 	}
-	
-	
+
+
 	public Point[] _get_axis(){
 		Polygon _rotation_mask = _get_rotation_mask(physics_body_,angle_);
 		Point[] _axes = new Point[_rotation_mask.npoints];
@@ -155,4 +154,27 @@ public class Shape {
 		}
 		return true;
 	}
+
+	public boolean _contains_point(Point _point){
+		final int _MAX_RANGE = 1000000;
+		Polygon _rotation_mask = _get_rotation_mask(physics_body_,angle_);
+		int _hit_count = 0;
+		Line2D _horizonal = new Line2D.Double(_point, new Point(_point.x + _MAX_RANGE ,_point.y));
+		for(int _index = 0; _index < _rotation_mask.npoints-1; _index++){
+			Point _vertex_from = new Point(_rotation_mask.xpoints[_index],_rotation_mask.ypoints[_index]);
+			Point _vertex_to = new Point(_rotation_mask.xpoints[_index+1],_rotation_mask.ypoints[_index+1]);
+			Line2D _facet = new Line2D.Double(_vertex_from,_vertex_to);
+			if(_facet.intersectsLine(_horizonal)){
+				_hit_count++;
+			}
+		}
+		Point _closing_vertex_from = new Point(_rotation_mask.xpoints[_rotation_mask.npoints-1],_rotation_mask.ypoints[_rotation_mask.npoints-1]);
+		Point _closing_vertex_to = new Point(_rotation_mask.xpoints[0],_rotation_mask.ypoints[0]);
+		Line2D _facet = new Line2D.Double(_closing_vertex_from,_closing_vertex_to);
+		if(_facet.intersectsLine(_horizonal)){
+			_hit_count++;
+		}
+		return _hit_count > 0 && _hit_count % 2 == 1;
+	}
+
 }

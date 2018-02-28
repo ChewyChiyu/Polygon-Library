@@ -47,5 +47,9 @@ drag and drop com.chewychiyu.shape into project folder
 ```java
    boolean _did_collide = _shape_a._collided_with(_shape_b);
 ```
+   Prompt for point in polygon
+```java
+   boolean _contain_point = _shape_a._contains_point(_point);
+```
    
    

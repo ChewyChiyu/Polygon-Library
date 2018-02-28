@@ -3,7 +3,6 @@ package com.chewychiyu.polygon_test;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -35,8 +34,9 @@ public class TestClass extends JPanel{
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				poly_._shift_to(e.getX(), e.getY());
+			//	poly_._shift_to(e.getX(), e.getY());
 				poly_._set_color(new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255)));
+				System.out.println(poly_._contains_point(e.getPoint()));
 				repaint();
 			}
 
@@ -90,7 +90,7 @@ public class TestClass extends JPanel{
 					//poly_._change_size_by(10);
 				}else if(e.getWheelRotation() > 0){
 					//poly_._change_facets_by(-1);
-				    poly_._rotate_by(-Math.PI/60);
+				   poly_._rotate_by(-Math.PI/60);
 					//poly_._change_size_by(-10);
 				}		
 				repaint();
@@ -105,7 +105,7 @@ public class TestClass extends JPanel{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		poly_._draw_fill(g);
-		poly2_._draw_fill(g);
+		//poly2_._draw_fill(g);
 		if(poly_._collided_with(poly2_)){
 			poly_._set_color(Color.RED);
 			poly2_._set_color(Color.RED);
