@@ -28,8 +28,10 @@ public class TestClass extends JPanel{
 	
 	TestClass(){
 		panel();
-		poly_ = new Shape(300,300,200,3);
+		poly_ = new Shape(300,300,50,3);
 		poly2_ = new Shape(300,300,50,4);
+		poly_._set_push_magnitute(1000);
+		poly2_._set_push_magnitute(10000);
 		poly2_._toggle_collision(true);
 		poly_._toggle_collision(true);
 		addMouseListener(new MouseListener(){

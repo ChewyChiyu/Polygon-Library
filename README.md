@@ -59,5 +59,9 @@ drag and drop com.chewychiyu.shape into project folder
 ```java
    _shape_a._toggle_collision(_activated_collision);
 ``` 
+   Set collision push magnitute
+```java
+   _shape_a._set_push_magnitute(_push_magnitute);
+``` 
 
    
