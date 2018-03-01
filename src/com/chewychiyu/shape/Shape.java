@@ -16,7 +16,7 @@ public class Shape {
 	private double sides_;
 	private double angle_;
 	private Color color_;
-
+	private boolean collisions_ = false;
 	public Shape(double _x_pos, double _y_pos, double _side_length, int _sides){
 		location_ = new Point2D.Double(_x_pos, _y_pos);
 		side_length_ = _side_length;
@@ -26,6 +26,10 @@ public class Shape {
 		_form_facets();
 	}
 
+	public void _toggle_collision(boolean _collision){
+		collisions_ = _collision;
+	}
+	
 	public void _set_color(Color _new_color){
 		color_ = _new_color;
 	}
@@ -65,6 +69,14 @@ public class Shape {
 			physics_body_.ypoints[_index] += ( _new_y - location_.getY() );
 		}
 		location_.setLocation(_new_x, _new_y);
+	}
+	
+	public void _shift_by(double _delta_x , double _delta_y){
+		for(int _index = 0; _index < physics_body_.npoints; _index++){
+			physics_body_.xpoints[_index] += ( _delta_x );
+			physics_body_.ypoints[_index] += ( _delta_y );
+		}
+		location_.setLocation(location_.getX() + _delta_x, location_.getY() + _delta_y);
 	}
 
 	public void _rotate_by(double _angle){
@@ -136,12 +148,22 @@ public class Shape {
 	public boolean _collided_with(Shape _s){
 		Point[] _self_axes = _get_axis();
 		Point[] _other_axes = _s._get_axis();
+		double _overlap_amount = -1;
+		final int _PUSH_MAGNITUTE = ((int) (_s.side_length_ * side_length_) * 15 );
+		Point _overlap_axis = null;
 		for (int _index = 0; _index < _self_axes.length; _index++) {
 			Point _axis = _self_axes[_index];
 			Point _self_projection = _get_projection(_axis);
 			Point _other_projection = _s._get_projection(_axis);
 			if(_self_projection.y < _other_projection.x || _other_projection.y < _self_projection.x){
 				return false;
+			}else{
+				double _possible_min_overlap = (_self_projection.y > _other_projection.x ) ?
+						_self_projection.y - _other_projection.x : _other_projection.y - _self_projection.x;
+				if(_overlap_amount == -1 || _possible_min_overlap < _overlap_amount){
+					_overlap_amount = _possible_min_overlap;
+					_overlap_axis = _axis;
+				}
 			}
 		}
 		for (int _index = 0; _index < _other_axes.length; _index++) {
@@ -150,11 +172,23 @@ public class Shape {
 			Point _other_projection = _s._get_projection(_axis);
 			if(_self_projection.y < _other_projection.x || _other_projection.y < _self_projection.x){
 				return false;
+			}else{
+				double _possible_min_overlap = (_self_projection.y > _other_projection.x ) ?
+						_self_projection.y - _other_projection.x : _other_projection.y - _self_projection.x;
+				if(_overlap_amount == -1 || _possible_min_overlap < _overlap_amount){
+					_overlap_amount = _possible_min_overlap;
+					_overlap_axis = _axis;
+				}
 			}
+		}
+		if(collisions_){
+		_s._shift_by(_overlap_axis.getX()*(_overlap_amount/_PUSH_MAGNITUTE), _overlap_axis.getY()*(_overlap_amount/_PUSH_MAGNITUTE));
 		}
 		return true;
 	}
-
+	
+	
+	
 	public boolean _contains_point(Point _point){
 		final int _MAX_RANGE = 1000000;
 		Polygon _rotation_mask = _get_rotation_mask(physics_body_,angle_);

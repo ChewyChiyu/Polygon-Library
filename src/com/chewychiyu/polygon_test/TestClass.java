@@ -29,14 +29,15 @@ public class TestClass extends JPanel{
 	TestClass(){
 		panel();
 		poly_ = new Shape(300,300,200,3);
-		poly2_ = new Shape(300,300,200,4);
+		poly2_ = new Shape(300,300,50,4);
+		poly2_._toggle_collision(true);
+		poly_._toggle_collision(true);
 		addMouseListener(new MouseListener(){
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-			//	poly_._shift_to(e.getX(), e.getY());
+				poly_._shift_to(e.getX(), e.getY());
 				poly_._set_color(new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255)));
-				System.out.println(poly_._contains_point(e.getPoint()));
 				repaint();
 			}
 
@@ -105,7 +106,7 @@ public class TestClass extends JPanel{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		poly_._draw_fill(g);
-		//poly2_._draw_fill(g);
+		poly2_._draw_fill(g);
 		if(poly_._collided_with(poly2_)){
 			poly_._set_color(Color.RED);
 			poly2_._set_color(Color.RED);

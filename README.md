@@ -26,6 +26,10 @@ drag and drop com.chewychiyu.shape into project folder
 ```java
    _shape._shift_to(_new_pos_x, _new_pos_y);
 ```
+   Change position of shape ( delta )
+```java
+   _shape._shift_by(_delta_x, _delta_y);
+```
    Rotate the shape by
 ```java
    _shape._rotate_by(_angle);
@@ -51,5 +55,9 @@ drag and drop com.chewychiyu.shape into project folder
 ```java
    boolean _contain_point = _shape_a._contains_point(_point);
 ```
-   
+   Toggle collision interactions
+```java
+   _shape_a._toggle_collision(_activated_collision);
+``` 
+
    
